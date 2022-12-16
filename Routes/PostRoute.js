@@ -1,22 +1,41 @@
 const express = require("express")
 const Post = require("../Models/Models")
 const router = express.Router()
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 mongoose.connect("mongodb+srv://shivkumar:shivkumarproject@cluster0.ukvzdar.mongodb.net/InstaCloneDB")
-const cloudinary = require('cloudinary')
+const cloudinary = require('cloudinary').v2
+const fileUpload = require('express-fileupload')
+
+router.use(fileUpload({
+    useTempFiles : true,
+}))
 
 cloudinary.config({ 
     cloud_name: 'dpe6qjg5t', 
     api_key: '924817626568466', 
-    api_secret: 'D-SbvS4uCXD3VdsqlP8grdz46dU' 
+    api_secret: 'D-SbvS4uCXD3VdsqlP8grdz46dU'
   });
 
 router.post("/create", async(req,res)=>{
     try{
+    console.log(req.body)
+    // console.log(req.body.PostImage)
+    const file = req.files.PostImage;
+    // console.log(result.url)
+    
+   
+    const result = await cloudinary.uploader.upload(file.tempFilePath, {
+        pulic_id: `${Date.now()}`,
+        resource_type: "auto",
+        folder: "Images"
         
-    const post = await  Post.create({
+    })
+    
+
+    const post = await Post.create({
         name:req.body.name,
-        PostImage:req.body.PostImage,
+        PostImage:result.url,
+        // PostImage:req.body.PostImage,
         likes: Math.floor(Math.random()*100),
         location:req.body.location,
         Description:req.body.Description,
