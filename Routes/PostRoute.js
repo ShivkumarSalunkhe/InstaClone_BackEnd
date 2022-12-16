@@ -3,6 +3,10 @@ const Post = require("../Models/Models")
 const router = express.Router()
 const mongoose = require("mongoose")
 mongoose.connect("mongodb+srv://shivkumar:shivkumarproject@cluster0.ukvzdar.mongodb.net/InstaCloneDB")
+
+
+////
+
 const cloudinary = require('cloudinary').v2
 const fileUpload = require('express-fileupload')
 
@@ -18,19 +22,16 @@ cloudinary.config({
 
 router.post("/create", async(req,res)=>{
     try{
-    console.log(req.body)
-    // console.log(req.body.PostImage)
-    const file = req.files.PostImage;
-    // console.log(result.url)
-    
    
+
+    const file = req.files.PostImage;
     const result = await cloudinary.uploader.upload(file.tempFilePath, {
         pulic_id: `${Date.now()}`,
         resource_type: "auto",
         folder: "Images"
         
     })
-    
+    console.log(req.body)
 
     const post = await Post.create({
         name:req.body.name,
@@ -59,7 +60,7 @@ router.post("/create", async(req,res)=>{
 
 router.route("/posts").get((req, res)=>{
     Post.find()
-        .then(foundPosts => res.json(foundPosts))
+        .then(foundPosts => res.json(foundPosts.reverse()))
 
 })
 
