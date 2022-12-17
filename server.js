@@ -18,7 +18,7 @@ app.get("*", (req,res)=>{
     res.status(500).send("FAILD API")
 })
 
-app.listen(4000, ()=>{
+app.listen(3000, ()=>{
     console.log("Server Is Up");
 })
 
